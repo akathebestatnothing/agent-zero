@@ -515,6 +515,8 @@ class Agent:
                                 "message_loop_end", loop_data=self.loop_data
                             )
 
+                    error_retries = 0  # reset retry counter on successful iteration
+
             # exceptions outside message loop:
             except InterventionException as e:
                 error_retries = 0  # reset retry counter on user intervention
@@ -798,6 +800,7 @@ class Agent:
         response_callback: Callable[[str, str], Awaitable[None]] | None = None,
         reasoning_callback: Callable[[str, str], Awaitable[None]] | None = None,
         background: bool = False,
+        explicit_caching: bool = True,
     ):
         response = ""
 
@@ -812,6 +815,7 @@ class Agent:
             rate_limiter_callback=(
                 self.rate_limiter_callback if not background else None
             ),
+            explicit_caching=explicit_caching,
         )
 
         return response, reasoning
